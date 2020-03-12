@@ -1,7 +1,32 @@
+# Copyright 2016, 2019 John Rofrano. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the 'License');
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an 'AS IS' BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
-Models for <your resource name>
+Models for Pet Demo Service
 
 All of the models are stored in this module
+
+Models
+------
+Pet - A Pet used in the Pet Store
+
+Attributes:
+-----------
+name (string) - the name of the pet
+category (string) - the category the pet belongs to (i.e., dog, cat)
+available (boolean) - True for pets that are available for adoption
+
 """
 import logging
 from flask_sqlalchemy import SQLAlchemy
@@ -16,9 +41,12 @@ class DataValidationError(Exception):
     pass
 
 
-class YourResourceModel(db.Model):
+class Pet(db.Model):
     """
-    Class that represents a <your resource model name>
+    Class that represents a Pet
+
+    This version uses a relational database for persistence which is hidden
+    from us by SQLAlchemy's object relational mappings (ORM)
     """
 
     app = None
@@ -26,13 +54,15 @@ class YourResourceModel(db.Model):
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63))
+    category = db.Column(db.String(63))
+    available = db.Column(db.Boolean())
 
     def __repr__(self):
-        return "<<your resource name> %r id=[%s]>" % (self.name, self.id)
+        return "<Pet %r id=[%s]>" % (self.name, self.id)
 
     def create(self):
         """
-        Creates a <your resource name> to the database
+        Creates a Pet to the database
         """
         logger.info("Creating %s", self.name)
         self.id = None  # id must be none to generate next primary key
@@ -41,38 +71,42 @@ class YourResourceModel(db.Model):
 
     def save(self):
         """
-        Updates a <your resource name> to the database
+        Updates a Pet to the database
         """
         logger.info("Saving %s", self.name)
         db.session.commit()
 
     def delete(self):
-        """ Removes a <your resource name> from the data store """
+        """ Removes a Pet from the data store """
         logger.info("Deleting %s", self.name)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a <your resource name> into a dictionary """
+        """ Serializes a Pet into a dictionary """
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "category": self.category,
+            "available": self.available,
         }
 
     def deserialize(self, data):
         """
-        Deserializes a <your resource name> from a dictionary
+        Deserializes a Pet from a dictionary
 
         Args:
-            data (dict): A dictionary containing the resource data
+            data (dict): A dictionary containing the Pet data
         """
         try:
             self.name = data["name"]
+            self.category = data["category"]
+            self.available = data["available"]
         except KeyError as error:
-            raise DataValidationError("Invalid <your resource name>: missing " + error.args[0])
+            raise DataValidationError("Invalid pet: missing " + error.args[0])
         except TypeError as error:
             raise DataValidationError(
-                "Invalid <your resource name>: body of request contained" "bad or no data"
+                "Invalid pet: body of request contained" "bad or no data"
             )
         return self
 
@@ -88,28 +122,49 @@ class YourResourceModel(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the <your resource name>s in the database """
-        logger.info("Processing all <your resource name>s")
+        """ Returns all of the Pets in the database """
+        logger.info("Processing all Pets")
         return cls.query.all()
 
     @classmethod
-    def find(cls, by_id):
-        """ Finds a <your resource name> by it's ID """
-        logger.info("Processing lookup for id %s ...", by_id)
-        return cls.query.get(by_id)
+    def find(cls, pet_id):
+        """ Finds a Pet by it's ID """
+        logger.info("Processing lookup for id %s ...", pet_id)
+        return cls.query.get(pet_id)
 
     @classmethod
-    def find_or_404(cls, by_id):
-        """ Find a <your resource name> by it's id """
-        logger.info("Processing lookup or 404 for id %s ...", by_id)
-        return cls.query.get_or_404(by_id)
+    def find_or_404(cls, pet_id):
+        """ Find a Pet by it's id """
+        logger.info("Processing lookup or 404 for id %s ...", pet_id)
+        return cls.query.get_or_404(pet_id)
 
     @classmethod
     def find_by_name(cls, name):
-        """ Returns all <your resource name>s with the given name
+        """ Returns all Pets with the given name
 
         Args:
-            name (string): the name of the <your resource name>s you want to match
+            name (string): the name of the Pets you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
+
+    @classmethod
+    def find_by_category(cls, category):
+        """ Returns all of the Pets in a category
+
+        Args:
+            category (string): the category of the Pets you want to match
+        """
+        logger.info("Processing category query for %s ...", category)
+        return cls.query.filter(cls.category == category)
+
+    @classmethod
+    def find_by_availability(cls, available=True):
+        """ Query that finds Pets by their availability """
+        """ Returns all Pets by their availability
+
+        Args:
+            available (boolean): True for pets that are available
+        """
+        logger.info("Processing available query for %s ...", available)
+        return cls.query.filter(cls.available == available)
