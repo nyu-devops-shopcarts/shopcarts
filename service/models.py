@@ -18,7 +18,7 @@ class DataValidationError(Exception):
 
 class shopcart(db.Model):
     """
-    Class that represents a shopcart
+    Class that represents a Shopcart
     """
 
     app = None
@@ -28,11 +28,11 @@ class shopcart(db.Model):
     name = db.Column(db.String(63))
 
     def __repr__(self):
-        return "<shopcart %r id=[%s]>" % (self.name, self.id)
+        return "<Shopcart %r id=[%s]>" % (self.name, self.id)
 
     def create(self):
         """
-        Creates a shopcart to the database
+        Creates a Shopcart to the database
         """
         logger.info("Creating %s", self.name)
         self.id = None  # id must be none to generate next primary key
@@ -41,19 +41,19 @@ class shopcart(db.Model):
 
     def save(self):
         """
-        Updates a shopcart to the database
+        Updates a Shopcart to the database
         """
         logger.info("Saving %s", self.name)
         db.session.commit()
 
     def delete(self):
-        """ Removes a shopcart from the data store """
+        """ Removes a Shopcart from the data store """
         logger.info("Deleting %s", self.name)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a shopcart into a dictionary """
+        """ Serializes a Shopcart into a dictionary """
         return {
             "id": self.id,
             "name": self.name
@@ -61,7 +61,7 @@ class shopcart(db.Model):
 
     def deserialize(self, data):
         """
-        Deserializes a shopcart from a dictionary
+        Deserializes a Shopcart from a dictionary
 
         Args:
             data (dict): A dictionary containing the resource data
@@ -88,13 +88,13 @@ class shopcart(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the shopcarts in the database """
+        """ Returns all of the Shopcarts in the database """
         logger.info("Processing all shopcarts")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """ Finds a shopcart by it's ID """
+        """ Finds a Shopcart by it's ID """
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 
@@ -106,10 +106,10 @@ class shopcart(db.Model):
 
     @classmethod
     def find_by_name(cls, name):
-        """ Returns all shopcarts with the given name
+        """ Returns all Shopcarts with the given name
 
         Args:
-            name (string): the name of the shopcarts you want to match
+            name (string): the name of the Shopcarts you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
