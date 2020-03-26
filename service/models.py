@@ -9,9 +9,16 @@ Models
 ShopCart - A cart with items in it
 
 Attributes:
+id
+customer_id
 
 --------
+CartItem
 
+Attributes:
+shopcart_id
+item_name
+item_number
 
 """
 import logging
@@ -35,22 +42,22 @@ class PersistentBase():
 
     def create(self):
         """
-        Creates a Account to the database
+        Creates a ShopCart to the database
         """
         logger.info("Creating %s", self.id)
-        self.id = None  # id must be none to generate next primary key
+        self.id = None  
         db.session.add(self)
         db.session.commit()
 
     def save(self):
         """
-        Updates a Account to the database
+        Updates a ShopCart to the database
         """
         logger.info("Saving %s", self.id)
         db.session.commit()
 
     def delete(self):
-        """ Removes a Account from the data store """
+        """ Removes a ShopCart from the data store """
         logger.info("Deleting %s", self.id)
         db.session.delete(self)
         db.session.commit()
@@ -89,36 +96,27 @@ class PersistentBase():
 #############################################################
 
 class ShopCart(db.Model, PersistentBase):
-    """
-    Class that represents a ShopCart
-    """
     __tablename__ = 'shopcart'
     app = None
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
+    customer_id =  db.Column(db.Integer)
     items  = db.relationship('CartItem', backref='shopcart', lazy=True)
-
+   
     def __repr__(self):
         return "<ShopCart id=[%s]>" % (self.id)
 
-    def save(self):
-        """
-        Updates a ShopCart to the database
-        """
-        logger.info("Saving %s", self.id)
-        db.session.commit()
-
     def serialize(self):
-        """ Serializes a ShopCart into a dictionary """
-        
-        return {
+        """ Serializes a ShopCart into a dictionary """       
+        item_list = {
             "id": self.id,
+            "customer_id": self.customer_id,
             "items": []
         }
         for item in self.items:
-            ShopCart['items'].append(item.serialize())
-        return ShopCart
+            item_list['items'].append(item.serialize())
+        return item_list
 
     def deserialize(self, data):
         """
@@ -128,7 +126,12 @@ class ShopCart(db.Model, PersistentBase):
             data (dict): A dictionary containing ShopCart data
         """
         try:
-            self.name = data["name"]
+            self.customer_id = data["customer_id"]
+            item_list = data.get("items")
+            for json_item in item_list:
+                item = CartItem()
+                item.deserialize(json_item)
+                self.items.append(item)
         except KeyError as error:
             raise DataValidationError("Invalid ShopCart: missing " + error.args[0])
         except TypeError as error:
@@ -138,27 +141,30 @@ class ShopCart(db.Model, PersistentBase):
         return self
 
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_item_name(cls, name):
         """ Returns all ShopCarts with the given name
 
         Args:
             name (string): the name of the ShopCarts you want to match
         """
         logger.info("Processing name query for %s ...", name)
-        return cls.query.filter(cls.name == name)
+        return cls.query.filter(cls.item_name == name)
 
 #############################################################
 # I T E M    M O D E L 
 #############################################################
 class CartItem(db.Model, PersistentBase):
+    
     """
     Class that represents an CartItem
     """
-
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
     shopcart_id = db.Column(db.Integer, db.ForeignKey('shopcart.id'), nullable=False)
-    name = db.Column(db.String(64)) # e.g., black-leather shoes, spatula.
+    item_name = db.Column(db.String(64)) 
+    sku = db.Column(db.String(16))
+    quantity = db.Column(db.Integer)
+    price = db.Column(db.Float)
 
     def __repr__(self):
         return "<Item %r id=[%s] ShopCart account[%s]>" % (self.name, self.id, self.shopcart_id)
@@ -171,18 +177,25 @@ class CartItem(db.Model, PersistentBase):
         return {
             "id": self.id,
             "shopcart_id": self.shopcart_id,
-            "name": self.name
+            "item_name": self.item_name,
+            "sku":self.sku,
+            "quantity":self.quantity,
+            "price":self.price
         }
 
     def deserialize(self, data):
         """
-        Deserializes a Address from a dictionary
+        Deserializes a CartItem from a dictionary
         Args:
             data (dict): A dictionary containing the resource data
         """
         try:
             self.shopcart_id = data["shopcart_id"]
-            self.name = data["name"]
+            self.item_name = data["item_name"]
+            self.sku = data["sku"]
+            self.quantity = data["quantity"]
+            self.price = data["price"]
+
         except KeyError as error:
             raise DataValidationError("Invalid Address: missing " + error.args[0])
         except TypeError as error:

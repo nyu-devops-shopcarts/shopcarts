@@ -17,7 +17,7 @@ Test Factory to make fake objects for testing
 """
 import factory
 from datetime import datetime
-from factory.fuzzy import FuzzyChoice
+from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyFloat
 from service.models import ShopCart, CartItem
 
 class CartItemFactory(factory.Factory):
@@ -28,7 +28,10 @@ class CartItemFactory(factory.Factory):
 
     id = factory.Sequence(lambda n: n)
     shopcart_id = factory.Sequence(lambda n: n)
-    name = FuzzyChoice(choices=["pants", "shirt", "shoes"])
+    item_name = FuzzyChoice(choices=["pants", "shirt", "shoes"])
+    sku = FuzzyChoice(choices=["1A3B", "2A94", "4PT3", "4DW2", "00A2","0992", "112A", "APC1"])
+    quantity = FuzzyInteger(0, 50, step=1)
+    price = FuzzyFloat(0.5, 100.5)
 
 
 class ShopCartFactory(factory.Factory):
@@ -38,4 +41,5 @@ class ShopCartFactory(factory.Factory):
         model = ShopCart
 
     id = factory.Sequence(lambda n: n)
+    customer_id = FuzzyInteger(0, 1000, step=1)
     
