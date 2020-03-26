@@ -51,6 +51,26 @@ def delete_item(shopcart_id):
     cart.items.remove(item)  # <- we simply append to items list
     cart.save()  
 
+
+######################################################################
+# CREATE A SHOPCART
+######################################################################
+@app.route("/shopcarts", methods=["POST"])
+def create_shopcarts():
+    """
+    Creates a shopping cart
+    This endpoint will create a Shopcart based the data in the body that is posted
+    """
+    app.logger.info("Request to create a ShopCart")
+    check_content_type("application/json")
+    shopcart = ShopCart()
+    shopcart.deserialize(request.get_json())
+    shopcart.create()
+    message = shopcart.serialize()
+    location_url = url_for("get_shopcarts", shopcart_id=shopcart.id, _external=True)
+    return make_response(
+        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+    ) 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
