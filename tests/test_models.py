@@ -138,49 +138,47 @@ class TestShopCart(unittest.TestCase):
     #     shopcart = ShopCart.find(shopcart.id)
     #     self.assertEqual(shopcart.customer_id, 2)
 
-    # def test_deserialize_cart_key_error(self):
-    #     """ Deserialize an ShopCart account with a KeyError """
-    #     shopcart = ShopCart()
-    #     self.assertRaises(DataValidationError, shopcart.deserialize, {})
+    def test_delete_shopcart_item(self):
+        """ Delete a ShopCart item """
+        shopcarts = ShopCart.all()
+        self.assertEqual(shopcarts, [])
 
-    # def test_deserialize_cart_type_error(self):
-    #     """ Deserialize a ShopCart with a TypeError """
-    #     shopcart = ShopCart()
-    #     self.assertRaises(DataValidationError, shopcart.deserialize, [])
+        item = self._create_item()
+        shopcart = self._create_shopcart(items=[item])
+        shopcart.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertEqual(shopcart.id, 1)
+        shopcarts = ShopCart.all()
+        self.assertEqual(len(shopcarts), 1)
 
-    # def test_deserialize_item_key_error(self):
-    #     """ Deserialize CartItem with a KeyError """
-    #     cart_item = CartItem()
-    #     self.assertRaises(DataValidationError, cart_item.deserialize, {})
+        # Fetch it back
+        shopcart = ShopCart.find(shopcart.id)
+        item = shopcart.items[0]
+        item.delete()
+        shopcart.save()
 
-    # def test_deserialize_item_type_error(self):
-    #     """ Deserialize a CarItem with a TypeError """
-    #     cart_item = CartItem()
-    #     self.assertRaises(DataValidationError, cart_item.deserialize, {})
+        # Fetch it back again
+        shopcart = ShopCart.find(shopcart.id)
+        self.assertEqual(len(shopcart.items), 0)
+######################################################################
+#  SERIALIZE/DESERIALIZE TEST CASES
+######################################################################
+    def test_deserialize_cart_key_error(self):
+        """ Deserialize an ShopCart account with a KeyError """
+        shopcart = ShopCart()
+        self.assertRaises(DataValidationError, shopcart.deserialize, {})
 
+    def test_deserialize_cart_type_error(self):
+        """ Deserialize a ShopCart with a TypeError """
+        shopcart = ShopCart()
+        self.assertRaises(DataValidationError, shopcart.deserialize, [])
 
-    # def test_delete_shopcart_item(self):
-    #     """ Delete a shopcart item """
-    #     shopcarts = ShopCart.all()
-    #     self.assertEqual(shopcarts, [])
+    def test_deserialize_item_key_error(self):
+        """ Deserialize CartItem with a KeyError """
+        cart_item = CartItem()
+        self.assertRaises(DataValidationError, cart_item.deserialize, {})
 
-    #     item = self._create_item()
-    #     shopcart = self._create_shopcart()
-    #     shopcart.create()
-    #     # Assert that it was assigned an id and shows up in the database
-    #     self.assertEqual(shopcart.id, 1)
-    #     shopcarts = ShopCart.all()
-    #     self.assertEqual(len(shopcarts), 1)
-
-    #     # Fetch it back
-    #     shopcart = ShopCart.find(shopcart.id)
-    #     item = shopcart.items[0]
-    #     item.delete()
-    #     shopcart.save()
-
-    #     # Fetch it back again
-    #     shopcart = ShopCart.find(shopcart.id)
-    #     self.assertEqual(len(shopcart.items), 0)
-
-    # 
-
+    def test_deserialize_item_type_error(self):
+        """ Deserialize a CarItem with a TypeError """
+        cart_item = CartItem()
+        self.assertRaises(DataValidationError, cart_item.deserialize, {})
