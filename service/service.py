@@ -89,6 +89,38 @@ def check_content_type(content_type):
 #---------------------------------------------------------------------
 
 ######################################################################
+# ADD AN ITEM TO A SHOPCART
+######################################################################
+@app.route('/shopcarts/<int:shopcart_id>/items', methods=['POST'])
+def create_items(shopcart_id):
+    """
+    Create an Item in a Shopcart
+    This endpoint will add an item to a shopcart
+    """
+    app.logger.info("Request to add an item to a shopcart")
+    check_content_type("application/json")
+    shopcart = ShopCart.find_or_404(shopcart_id)
+    item = CartItem()
+    item.deserialize(request.get_json())
+    shopcart.items.append(item)
+    shopcart.save()
+    message = item.serialize()
+    return make_response(jsonify(message), status.HTTP_201_CREATED)
+
+######################################################################
+# RETRIEVE AN ITEM FROM A SHOPCART
+######################################################################
+@app.route('/shopcarts/<int:shopcart_id>/items/<int:item_id>', methods=['GET'])
+def get_addresses(shopcart_id, item_id):
+    """
+    Get an Item
+    This endpoint returns just an item
+    """
+    app.logger.info("Request to get an item with id: %s", item_id)
+    item = CartItem.find_or_404(item_id)
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
+
+######################################################################
 # DELETE AN ITEM FROM SHOPCART
 ######################################################################
 @app.route("/shopcarts/<int:shopcart_id>/items", methods=["DELETE"])
