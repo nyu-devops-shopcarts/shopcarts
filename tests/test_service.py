@@ -126,6 +126,29 @@ class TestYourResourceServer(TestCase):
         resp = self.app.get("/shopcarts/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_update_shopcart(self):
+        """ Update an existing shopcart """
+        # create an ShopCart to update
+        test_shopcart = ShopCartFactory()
+        resp = self.app.post(
+            "/shopcarts", 
+            json=test_shopcart.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # update the ShopCart
+        new_shopcart = resp.get_json()
+        new_shopcart["customer_id"] = 12345678
+        resp = self.app.put(
+            "/shopcarts/{}".format(new_shopcart["id"]),
+            json=new_shopcart,
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_shopcart = resp.get_json()
+        self.assertEqual(updated_shopcart["customer_id"],12345678)
+
 ######################################################################
 #  CART ITEM   T E S T   C A S E S   H E R E 
 ######################################################################
