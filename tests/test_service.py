@@ -202,6 +202,44 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data["quantity"], item.quantity)
         self.assertEqual(data["price"], item.price)
 
+    def test_update_item(self):
+        """ Update an item in a shopcart """
+        # create a known address
+        shopcart = self._create_shopcarts(1)[0]
+        item = CartItemFactory()
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(shopcart.id), 
+            json=item.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = data["id"]
+        data["item_name"] = "item_name"
+
+        # send the update back
+        resp = self.app.put(
+            "/shopcarts/{}/items/{}".format(shopcart.id, item_id), 
+            json=data, 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        # retrieve it back
+        resp = self.app.get(
+            "/shopcarts/{}/items/{}".format(shopcart.id, item_id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["id"], item_id)
+        self.assertEqual(data["shopcart_id"], shopcart.id)
+        self.assertEqual(data["item_name"], "item_name")
+
 ##### Listing Test Case ## 
     def test_get_shopcart_items_list(self):
         """ Get a list of Items in a ShopCart """

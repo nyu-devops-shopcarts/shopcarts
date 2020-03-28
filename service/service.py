@@ -172,3 +172,19 @@ def list_items(shopcart_id):
     results = [item.serialize() for item in shopcart.items]
     return make_response(jsonify(results), status.HTTP_200_OK)
 
+######################################################################
+# UPDATE AN ITEM
+######################################################################
+@app.route("/shopcarts/<int:shopcart_id>/items/<int:item_id>", methods=["PUT"])
+def update_items (shopcart_id, item_id):
+    """
+    Update an Item
+    This endpoint will update an item based the body that is posted
+    """
+    app.logger.info("Request to update item with id: %s", item_id)
+    check_content_type("application/json")
+    item = CartItem.find_or_404(item_id)
+    item.deserialize(request.get_json())
+    item.id = item_id
+    item.save()
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
