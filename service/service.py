@@ -69,6 +69,26 @@ def get_shopcarts(shopcart_id):
     shopcart = ShopCart.find_or_404(shopcart_id)
     return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
+
+######################################################################
+# UPDATE AN EXISTING SHOPCART - Neil Vijapura
+######################################################################
+@app.route("/shopcarts/<int:shopcart_id>", methods=["PUT"])
+def update_shopcarts(shopcart_id):
+    """
+    Update an existing shopcart
+    This endpoint will update an shopcart based the body that is posted
+    """
+    app.logger.info("Request to update shopcart with id: %s", shopcart_id)
+    check_content_type("application/json")
+    shopcart = ShopCart.find(shopcart_id)
+    if not shopcart:
+        raise NotFound("ShopCart with id '{}' was not found.".format(shopcart_id))
+    shopcart.deserialize(request.get_json())
+    shopcart.id = shopcart_id
+    shopcart.save()
+    return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
@@ -151,3 +171,4 @@ def list_items(shopcart_id):
     shopcart = ShopCart.find_or_404(shopcart_id)
     results = [item.serialize() for item in shopcart.items]
     return make_response(jsonify(results), status.HTTP_200_OK)
+
