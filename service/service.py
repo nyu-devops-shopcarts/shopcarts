@@ -138,3 +138,16 @@ def delete_item(shopcart_id):
     item.deserialize(request.get_json())
     cart.items.remove(item)  # <- we simply append to items list
     cart.save()  
+
+
+######################################################################
+# LIST ALL ITEMS FROM SHOPCART
+######################################################################
+@app.route("/shopcarts/<int:shopcart_id>/items", methods=["GET"])
+def list_items(shopcart_id):
+    """ Returns all of the items within the shopcart """
+    app.logger.info("Request to list items from the shopping cart")
+
+    shopcart = ShopCart.find_or_404(shopcart_id)
+    results = [item.serialize() for item in shopcart.items]
+    return make_response(jsonify(results), status.HTTP_200_OK)
