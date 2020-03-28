@@ -83,7 +83,7 @@ class TestShopCart(unittest.TestCase):
         )
         self.assertTrue(shopcart != None)
         self.assertEqual(shopcart.id, None)
-        self.assertEqual(shopcart.customer_id, shopcart.customer_id)
+        self.assertEqual(shopcart.customer_id, fake_shopcart.customer_id)
 
     def test_serialize_cart(self):
         """ Serialize a ShopCart """

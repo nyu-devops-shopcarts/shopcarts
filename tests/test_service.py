@@ -129,3 +129,52 @@ class TestYourResourceServer(TestCase):
 ######################################################################
 #  CART ITEM   T E S T   C A S E S   H E R E 
 ######################################################################
+
+    def test_add_item(self):
+        """ Add an item to a shopcart """
+        shopcart = self._create_shopcarts(1)[0]
+        item = CartItemFactory()
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(shopcart.id), 
+            json=item.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["shopcart_id"], shopcart.id)
+        self.assertEqual(data["item_name"], item.item_name)
+        self.assertEqual(data["sku"], item.sku)
+        self.assertEqual(data["quantity"], item.quantity)
+        self.assertEqual(data["price"], item.price)
+
+    def test_get_item(self):
+        """ Get an item from a shopcart """
+        # create a known address
+        shopcart = self._create_shopcarts(1)[0]
+        item = CartItemFactory()
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(shopcart.id), 
+            json=item.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = data["id"]
+
+        # retrieve it back
+        resp = self.app.get(
+            "/shopcarts/{}/items/{}".format(shopcart.id, item_id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["shopcart_id"], shopcart.id)
+        self.assertEqual(data["item_name"], item.item_name)
+        self.assertEqual(data["sku"], item.sku)
+        self.assertEqual(data["quantity"], item.quantity)
+        self.assertEqual(data["price"], item.price)

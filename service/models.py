@@ -11,14 +11,18 @@ ShopCart - A cart with items in it
 Attributes:
 id
 customer_id
+items
 
 --------
 CartItem
 
 Attributes:
+id
 shopcart_id
 item_name
-item_number
+sku
+quantity
+price
 
 """
 import logging
@@ -167,13 +171,13 @@ class CartItem(db.Model, PersistentBase):
     price = db.Column(db.Float)
 
     def __repr__(self):
-        return "<Item %r id=[%s] ShopCart account[%s]>" % (self.name, self.id, self.shopcart_id)
+        return "<Item %r id=[%s] ShopCart [%s]>" % (self.item_name, self.id, self.shopcart_id)
 
     def __str__(self):
-        return "%s" % (self.name)
+        return "%s: " % (self.item_name, self.sku, self.quantity, self.price)
 
     def serialize(self):
-        """ Serializes a Address into a dictionary """
+        """ Serializes a Item into a dictionary """
         return {
             "id": self.id,
             "shopcart_id": self.shopcart_id,
@@ -197,9 +201,9 @@ class CartItem(db.Model, PersistentBase):
             self.price = data["price"]
 
         except KeyError as error:
-            raise DataValidationError("Invalid Address: missing " + error.args[0])
+            raise DataValidationError("Invalid Item: missing " + error.args[0])
         except TypeError as error:
             raise DataValidationError(
-                "Invalid Address: body of request contained" "bad or no data"
+                "Invalid Item: body of request contained" "bad or no data"
             )
         return self
