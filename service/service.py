@@ -24,6 +24,83 @@ from service.models import ShopCart, CartItem, DataValidationError
 from . import app
 
 ######################################################################
+# Error Handlers
+######################################################################
+@app.errorhandler(DataValidationError)
+def request_validation_error(error):
+    """ Handles Value Errors from bad data """
+    return bad_request(error)
+
+
+@app.errorhandler(status.HTTP_400_BAD_REQUEST)
+def bad_request(error):
+    """ Handles bad reuests with 400_BAD_REQUEST """
+    message = str(error)
+    app.logger.warning(message)
+    return (
+        jsonify(
+            status=status.HTTP_400_BAD_REQUEST, error="Bad Request", message=message
+        ),
+        status.HTTP_400_BAD_REQUEST,
+    )
+
+
+@app.errorhandler(status.HTTP_404_NOT_FOUND)
+def not_found(error):
+    """ Handles resources not found with 404_NOT_FOUND """
+    message = str(error)
+    app.logger.warning(message)
+    return (
+        jsonify(status=status.HTTP_404_NOT_FOUND, error="Not Found", message=message),
+        status.HTTP_404_NOT_FOUND,
+    )
+
+
+@app.errorhandler(status.HTTP_405_METHOD_NOT_ALLOWED)
+def method_not_supported(error):
+    """ Handles unsuppoted HTTP methods with 405_METHOD_NOT_SUPPORTED """
+    message = str(error)
+    app.logger.warning(message)
+    return (
+        jsonify(
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            error="Method not Allowed",
+            message=message,
+        ),
+        status.HTTP_405_METHOD_NOT_ALLOWED,
+    )
+
+
+@app.errorhandler(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+def mediatype_not_supported(error):
+    """ Handles unsuppoted media requests with 415_UNSUPPORTED_MEDIA_TYPE """
+    message = str(error)
+    app.logger.warning(message)
+    return (
+        jsonify(
+            status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            error="Unsupported media type",
+            message=message,
+        ),
+        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+    )
+
+
+@app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
+def internal_server_error(error):
+    """ Handles unexpected server error with 500_SERVER_ERROR """
+    message = str(error)
+    app.logger.error(message)
+    return (
+        jsonify(
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            error="Internal Server Error",
+            message=message,
+        ),
+        status.HTTP_500_INTERNAL_SERVER_ERROR,
+    )
+
+######################################################################
 # GET INDEX
 ######################################################################
 @app.route("/")
@@ -176,21 +253,17 @@ def get_addresses(shopcart_id, item_id):
 ######################################################################
 # DELETE AN ITEM FROM SHOPCART
 ######################################################################
-@app.route("/shopcarts/<int:shopcart_id>/items", methods=["DELETE"])
-def delete_item(shopcart_id):
-    # """
-    # Delete a Pet
-    # This endpoint will delete a Pet based the id specified in the path
-    # """
-    app.logger.info("Request to delete an item from the shopping cart")
-    #Need to make a class for cart# 
-    cart = ShopCart.find(shopcart_id)
-    if not cart:
-        return make_response("", status.HTTP_204_NO_CONTENT)
-    item = CartItem()
-    item.deserialize(request.get_json())
-    cart.items.remove(item)  # <- we simply append to items list
-    cart.save()  
+@app.route("/shopcarts/<int:shopcart_id>/items/<int:item_id>", methods=["DELETE"])
+def delete_items(shopcart_id, item_id):
+    """
+    Delete an item
+    This endpoint will delete an item based the id specified in the path
+    """
+    app.logger.info("Request to delete shopcart with id: %s", shopcart_id)
+    item = CartItem.find(item_id)
+    if item:
+        item.delete()
+    return make_response("", status.HTTP_204_NO_CONTENT)
 
 
 ######################################################################

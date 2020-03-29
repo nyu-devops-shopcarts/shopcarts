@@ -170,6 +170,35 @@ class TestYourResourceServer(TestCase):
         data = resp.get_json()
         self.assertEqual(len(data), 5)
 
+    def test_bad_request(self):
+        """ Send wrong media type """
+        shopcart = ShopCartFactory()
+        resp = self.app.post(
+            "/shopcarts", 
+            json={"name": "not enough data"}, ###name should be changed?
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unsupported_media_type(self):
+        """ Send wrong media type """
+        shopcart = ShopCartFactory()
+        resp = self.app.post(
+            "/shopcarts", 
+            json=shopcart.serialize(), 
+            content_type="test/html"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_method_not_allowed(self):
+        """ Make an illegal method call """
+        resp = self.app.put(
+            "/shopcarts", 
+            json={"not": "today"}, 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 ######################################################################
 #  CART ITEM   T E S T   C A S E S   H E R E 
@@ -294,3 +323,31 @@ class TestYourResourceServer(TestCase):
 
         data = resp.get_json()
         self.assertEqual(len(data), 2)
+
+    def test_delete_item(self):
+        """ Delete an Item """
+        shopcart = self._create_shopcarts(1)[0]
+        item = CartItemFactory()
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(shopcart.id), 
+            json=item.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        item_id = data["id"]
+
+        # send delete request
+        resp = self.app.delete(
+            "/shopcarts/{}/items/{}".format(shopcart.id, item_id),
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+        # retrieve it back and make sure address is not there
+        resp = self.app.get(
+            "/shopcarts/{}/items/{}".format(shopcart.id, item_id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
