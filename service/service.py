@@ -90,6 +90,23 @@ def update_shopcarts(shopcart_id):
     return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
 ######################################################################
+# LIST ALL ShopCarts - Neil Vijpapura
+######################################################################
+@app.route("/shopcarts", methods=["GET"])
+def list_shopcarts():
+    """ Returns IDs of the ShopCarts """
+    app.logger.info("Request for ShopCart list")
+    shopcarts = []
+    id = request.args.get("id")
+    if id:
+        shopcarts = ShopCart.find(id)
+    else:
+        shopcarts = ShopCart.all()
+
+    results = [shopcart.serialize() for shopcart in shopcarts]
+    return make_response(jsonify(results), status.HTTP_200_OK)  
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
