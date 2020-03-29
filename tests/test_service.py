@@ -149,6 +149,7 @@ class TestYourResourceServer(TestCase):
         updated_shopcart = resp.get_json()
         self.assertEqual(updated_shopcart["customer_id"],12345678)
 
+
 #### Delete 
     def test_delete_shopcart(self):
         """ Delete an Shopcart """
@@ -159,6 +160,16 @@ class TestYourResourceServer(TestCase):
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+#### List
+    def test_get_shopcart_list(self):
+        """ Get a list of ShopCarts """
+        self._create_shopcarts(5)
+        resp = self.app.get("/shopcarts")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+
 
 ######################################################################
 #  CART ITEM   T E S T   C A S E S   H E R E 
