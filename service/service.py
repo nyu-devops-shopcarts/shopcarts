@@ -90,6 +90,21 @@ def update_shopcarts(shopcart_id):
     return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
 ######################################################################
+# DELETE AN ACCOUNT - Robert Ung
+######################################################################
+@app.route("/shopcarts/<int:shopcart_id>", methods=["DELETE"])
+def delete_shopcarts(shopcart_id):
+    """
+    Delete a shopcart
+    This endpoint will delete an shopcart based the id specified in the path
+    """
+    app.logger.info("Request to delete shopcart with id: %s", shopcart_id)
+    shopcart = ShopCart.find(shopcart_id)
+    if shopcart:
+        shopcart.delete()
+    return make_response("", status.HTTP_204_NO_CONTENT)
+
+######################################################################
 # LIST ALL ShopCarts - Neil Vijpapura
 ######################################################################
 @app.route("/shopcarts", methods=["GET"])
@@ -105,6 +120,7 @@ def list_shopcarts():
 
     results = [shopcart.serialize() for shopcart in shopcarts]
     return make_response(jsonify(results), status.HTTP_200_OK)  
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
