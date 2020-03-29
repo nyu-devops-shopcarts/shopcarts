@@ -1,5 +1,5 @@
 """
-Test cases for ShopCarts Model
+Test cases for ShopCart and CartItem Models
 
 """
 import logging
@@ -48,7 +48,7 @@ class TestShopCart(unittest.TestCase):
 #####################################################################
     
     def _create_shopcart(self, items=[]):
-        """ Creates an account from a Factory """
+        """ Creates a ShopCart from Factory """
         fake_shopcart = ShopCartFactory()
         shopcart = ShopCart(
             customer_id = fake_shopcart.customer_id,
@@ -59,7 +59,7 @@ class TestShopCart(unittest.TestCase):
         return shopcart
 
     def _create_item(self):
-        """ Creates fake item from factory """
+        """ Creates a CartItem from Factory """
         fake_item= CartItemFactory()
         item = CartItem(
             shopcart_id = fake_item.shopcart_id,
@@ -73,10 +73,10 @@ class TestShopCart(unittest.TestCase):
         return item
 
 ######################################################################
-#  P L A C E   T E S T   C A S E S   H E R E
+#  C A R T  &  I T E M   T E S T   C A S E S   H E R E
 ######################################################################
     def test_create_shopcart(self):
-        """ Create a ShopCart and assert that it exists """
+        """ Create a ShopCart -- Asserts that it exists """
         fake_shopcart = ShopCartFactory()
         shopcart = ShopCart(
             customer_id = fake_shopcart.customer_id
@@ -85,8 +85,19 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(shopcart.id, None)
         self.assertEqual(shopcart.customer_id, fake_shopcart.customer_id)
 
+    def test_add_shopcart(self):
+        """ Create a ShopCart -- Add it to the database """
+        shopcarts = ShopCart.all()
+        self.assertEqual(shopcarts, [])
+        shopcart = self._create_shopcart()
+        shopcart.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertEqual(shopcart.id, 1)
+        shopcarts = ShopCart.all()
+        self.assertEqual(len(shopcarts), 1)
+
     def test_serialize_cart(self):
-        """ Serialize a ShopCart """
+        """ Serializes a ShopCart """
         item = self._create_item()
         shopcart = self._create_shopcart(items=[item])
         serial_shopcart = shopcart.serialize()
@@ -98,45 +109,15 @@ class TestShopCart(unittest.TestCase):
         self.assertEqual(items[0]['sku'], item.sku)
         self.assertEqual(items[0]['quantity'], item.quantity)
         self.assertEqual(items[0]['price'], item.price)
-        
-
-    # def test_deserialize_cart(self):
-    #     """ Deserialize a ShopCart """
-    #     shopcart = ShopCart(id = 1, customer_id = 1)
-    #     serial_shopcart = shopcart.serialize()
-    #     new_shopcart = ShopCart(id = 1, customer_id = 1)
-    #     new_shopcart.deserialize(serial_shopcart)
-    #     self.assertEqual(new_shopcart.id, shopcart.id)
-    #     self.assertEqual(new_shopcart.customer_id, shopcart.customer_id)
-    #     # create a dictionary that deserializes a cart
 
     def test_deserialize_cart(self):
-        """ Deserialize a ShopCart """
+        """ Deserializes a ShopCart """
         item = self._create_item()
         shopcart = self._create_shopcart(items=[item])
         serial_shopcart = shopcart.serialize()
         new_shopcart = ShopCart()
         new_shopcart.deserialize(serial_shopcart)
         self.assertEqual(new_shopcart.id, shopcart.id)
-
-    # Deserialize cart with items too 
-
-    # save a cart
-
-    # def test_update_cart(self):
-    #     """ Update a Cart """
-    #     shopcart = ShopCart(id = 1, customer_id = 1)
-    #     shopcart.create()
-    #     # Assert that it was assigned an id and shows up in the database
-    #     self.assertEqual(shopcart.id, 1)
-    #     # Fetch it back
-    #     shopcart = ShopCart.find(shopcart.id)
-    #     shopcart.customer_id = 2
-    #     shopcart.save()
-
-    #     # Fetch it back again
-    #     shopcart = ShopCart.find(shopcart.id)
-    #     self.assertEqual(shopcart.customer_id, 2)
 
     def test_delete_shopcart_item(self):
         """ Delete a ShopCart item """
@@ -160,25 +141,26 @@ class TestShopCart(unittest.TestCase):
         # Fetch it back again
         shopcart = ShopCart.find(shopcart.id)
         self.assertEqual(len(shopcart.items), 0)
+
 ######################################################################
 #  SERIALIZE/DESERIALIZE TEST CASES
 ######################################################################
     def test_deserialize_cart_key_error(self):
-        """ Deserialize an ShopCart account with a KeyError """
+        """ Deserializes a ShopCart with a KeyError """
         shopcart = ShopCart()
         self.assertRaises(DataValidationError, shopcart.deserialize, {})
 
     def test_deserialize_cart_type_error(self):
-        """ Deserialize a ShopCart with a TypeError """
+        """ Deserializes a ShopCart with a TypeError """
         shopcart = ShopCart()
         self.assertRaises(DataValidationError, shopcart.deserialize, [])
 
     def test_deserialize_item_key_error(self):
-        """ Deserialize CartItem with a KeyError """
+        """ Deserializes a CartItem with a KeyError """
         cart_item = CartItem()
         self.assertRaises(DataValidationError, cart_item.deserialize, {})
 
     def test_deserialize_item_type_error(self):
-        """ Deserialize a CarItem with a TypeError """
+        """ Deserializes a CarItem with a TypeError """
         cart_item = CartItem()
         self.assertRaises(DataValidationError, cart_item.deserialize, {})

@@ -174,7 +174,7 @@ class CartItem(db.Model, PersistentBase):
         return "<Item %r id=[%s] ShopCart [%s]>" % (self.item_name, self.id, self.shopcart_id)
 
     def __str__(self):
-        return "%s: " % (self.item_name, self.sku, self.quantity, self.price)
+        return "%s: %s,%s,%s " % (self.item_name, self.sku, self.quantity, self.price)
 
     def serialize(self):
         """ Serializes a Item into a dictionary """

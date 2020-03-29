@@ -59,7 +59,7 @@ class TestYourResourceServer(TestCase):
 ######################################################################
 
     def _create_shopcarts(self, count):
-        """ Factory method to create shopcarts in bulk """
+        """ Factory method to create ShopCarts in bulk """
         shopcarts = []
         for _ in range(count):
             shopcart = ShopCartFactory()
@@ -75,7 +75,7 @@ class TestYourResourceServer(TestCase):
         return shopcarts
 
 ######################################################################
-#  SHOPCART   T E S T   C A S E S   H E R E 
+#  S H O P C A R T   T E S T   C A S E S   H E R E 
 ######################################################################
 
     def test_index(self):
@@ -83,31 +83,31 @@ class TestYourResourceServer(TestCase):
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-    # def test_create_shopcart(self):
-    #     """ Create a new ShopCart """
-    #     test_cart = ShopCartFactory()
-    #     resp = self.app.post(
-    #         "/shopcarts", 
-    #         json=test_cart.serialize(), 
-    #         content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+    def test_create_shopcart(self):
+        """ Create a ShopCart  """
+        shopcart = ShopCartFactory()
+        resp = self.app.post(
+            "/shopcarts", 
+            json=shopcart.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-
-    #     Make sure location header is set
-    #     location = resp.headers.get("Location", None)
-    #     self.assertIsNotNone(location)
+        #Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
         
-    #     Check the data is correct
-    #     new_shopcart = resp.get_json()
-    #     self.assertEqual(new_shopcart["items"], shopcart.items, "Names does not match")
-    #     Add for other attributes
+        #Check the data is correct
+        new_shopcart = resp.get_json()
+        self.assertEqual(new_shopcart["items"], shopcart.items, "Items do not match")
+        self.assertEqual(new_shopcart["customer_id"], shopcart.customer_id, "Customer ID does not match")
 
-    #     Check that the location header was correct by getting it
-    #     resp = self.app.get(location, content_type="application/json")
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     new_shopcart = resp.get_json()
-    #     self.assertEqual(new_shopcart["items"], shopcart.items, "Names does not match")
+        #Check that the location header was correct by getting it
+        resp = self.app.get(location, content_type="application/json")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_shopcart = resp.get_json()
+        self.assertEqual(new_shopcart["items"], shopcart.items, "Names does not match")
+        self.assertEqual(new_shopcart["customer_id"], shopcart.customer_id, "Customer ID does not match")
 
     def test_get_shopcart(self):
         """ Get a single ShopCart """
@@ -122,13 +122,13 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data["id"], shopcart.id)
     
     def test_get_shopcart_not_found(self):
-        """ Get an Shopcart that is not found """
+        """ Get a Shopcart that is not found """
         resp = self.app.get("/shopcarts/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_shopcart(self):
-        """ Update an existing shopcart """
-        # create an ShopCart to update
+        """ Update an existing ShopCart """
+        # create a ShopCart to update
         test_shopcart = ShopCartFactory()
         resp = self.app.post(
             "/shopcarts", 
@@ -149,10 +149,9 @@ class TestYourResourceServer(TestCase):
         updated_shopcart = resp.get_json()
         self.assertEqual(updated_shopcart["customer_id"],12345678)
 
-
 #### Delete 
     def test_delete_shopcart(self):
-        """ Delete an Shopcart """
+        """ Delete a ShopCart """
         # get the id of an shopcart
         shopcart = self._create_shopcarts(1)[0]
         resp = self.app.delete(
@@ -163,7 +162,7 @@ class TestYourResourceServer(TestCase):
 
 #### List
     def test_get_shopcart_list(self):
-        """ Get a list of ShopCarts """
+        """ Get list of ShopCarts """
         self._create_shopcarts(5)
         resp = self.app.get("/shopcarts")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -201,11 +200,11 @@ class TestYourResourceServer(TestCase):
 
 
 ######################################################################
-#  CART ITEM   T E S T   C A S E S   H E R E 
+#  C A R T I T E M   T E S T   C A S E S   H E R E 
 ######################################################################
 
     def test_add_item(self):
-        """ Add an item to a shopcart """
+        """ Add an item to a ShopCart """
         shopcart = self._create_shopcarts(1)[0]
         item = CartItemFactory()
         resp = self.app.post(
@@ -223,7 +222,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data["price"], item.price)
 
     def test_get_item(self):
-        """ Get an item from a shopcart """
+        """ Get an item from a ShopCart """
         # create a known address
         shopcart = self._create_shopcarts(1)[0]
         item = CartItemFactory()
@@ -254,7 +253,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data["price"], item.price)
 
     def test_update_item(self):
-        """ Update an item in a shopcart """
+        """ Update an item in a ShopCart """
         # create a known address
         shopcart = self._create_shopcarts(1)[0]
         item = CartItemFactory()
@@ -345,7 +344,7 @@ class TestYourResourceServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-        # retrieve it back and make sure address is not there
+        # retrieve it back and make sure item is not there
         resp = self.app.get(
             "/shopcarts/{}/items/{}".format(shopcart.id, item_id), 
             content_type="application/json"
