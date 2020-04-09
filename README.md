@@ -3,6 +3,9 @@
 This repository aims to be the technical support for the back end shopcarts production team using DevOps and Agile Methodoligies.
 
 The content of the repository is listed below.
+## NYU Travis-CI
+
+[![Build Status](https://travis-ci.org/nyu-devops-shopcarts/shopcarts.svg?branch=master)](https://travis-ci.org/nyu-devops-shopcarts/shopcarts)
 
 ## Members
 
