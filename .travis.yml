@@ -7,7 +7,12 @@ python:
 install: "pip install -r requirements.txt"
 
 # commands to run tests
-before_script: redis-cli ping
+env:
+  global:
+  - DATABASE_URI='postgres://postgres:@localhost:5432/testdb'
+
+before_script:
+  - psql -c 'create database testdb;' -U postgres
 
 script:
   - nosetests
@@ -16,4 +21,7 @@ script:
 #  - codecov
 
 services:
-  - redis-server
+#  - redis-server
+   - postgresql
+   
+
