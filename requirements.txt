@@ -12,3 +12,8 @@ pinocchio==0.4.2
 coverage==4.5.4
 pylint>=2.4.1
 factory-boy==2.12.0
+httpie>=1.0.3
+
+# Build Dependencies - Amy added from Travis file
+redis>=2.10
+
