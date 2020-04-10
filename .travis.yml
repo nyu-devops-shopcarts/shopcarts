@@ -1,0 +1,27 @@
+# Added the travis.yml file from professors example - Amy Setton
+language: python
+python:
+  - "3.6"
+
+# command to install dependencies
+install: "pip install -r requirements.txt"
+
+# commands to run tests
+env:
+  global:
+  - DATABASE_URI='postgres://postgres:@localhost:5432/testdb'
+
+before_script:
+  - psql -c 'create database testdb;' -U postgres
+
+script:
+  - nosetests
+
+#after_success:
+#  - codecov
+
+services:
+#  - redis-server
+   - postgresql
+   
+
