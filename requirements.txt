@@ -25,3 +25,5 @@ requests=2.22.0
 
 # Code Coverage
 coverage==4.5.4
+
+httpie>=1.0.3
