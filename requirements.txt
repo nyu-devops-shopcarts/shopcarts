@@ -25,3 +25,4 @@ requests==2.22.0
 
 # Code Coverage
 coverage==4.5.4
+codecov==2.0.15
