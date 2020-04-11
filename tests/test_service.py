@@ -7,6 +7,7 @@ Test cases can be run with the following:
 """
 import os
 import logging
+import json
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from service.models import ShopCart, CartItem
@@ -16,13 +17,9 @@ from service.models import db
 from service.service import app, init_db
 
 # DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
-#DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
-#)
 
 #NEW CODE#
 
-import json
 DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
 if 'VCAP_SERVICES' in os.environ:
     vcap = json.loads(os.environ['VCAP_SERVICES'])
