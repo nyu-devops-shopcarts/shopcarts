@@ -33,16 +33,6 @@ logger = logging.getLogger("flask.app")
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
-class DataValidationError(Exception):
-    """ Used for an data validation errors when deserializing """
-    pass
- 
-import json
-DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
-if 'VCAP_SERVICES' in os.environ:
-    vcap = json.loads(os.environ['VCAP_SERVICES'])
-    DATABASE_URI = vcap['user-provided'][0]['credentials']['url']
-
 from cloudant.client import Cloudant
 from cloudant.query import Query
 from cloudant.adapters import Replay429Adapter
@@ -58,6 +48,15 @@ CLOUDANT_PASSWORD = os.environ.get('CLOUDANT_PASSWORD', 'pass')
 RETRY_COUNT = int(os.environ.get('RETRY_COUNT', 10))
 RETRY_DELAY = int(os.environ.get('RETRY_DELAY', 1))
 RETRY_BACKOFF = int(os.environ.get('RETRY_BACKOFF', 2))
+
+#NEW CODE#
+import os
+import json
+DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
+if 'VCAP_SERVICES' in os.environ:
+    vcap = json.loads(os.environ['VCAP_SERVICES'])
+    DATABASE_URI = vcap['user-provided'][0]['credentials']['url']
+#NEW CODE#
 
 ############################################################
 # P E R S I S T E N T   B A S E    M O D E L 
