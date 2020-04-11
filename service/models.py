@@ -39,33 +39,6 @@ class DataValidationError(Exception):
 
 DATETIME_FORMAT='%Y-%m-%d %H:%M:%S.%f'
 
-from cloudant.client import Cloudant
-from cloudant.query import Query
-from cloudant.adapters import Replay429Adapter
-from requests import HTTPError, ConnectionError
-
-# get configruation from enviuronment (12-factor)
-import os
-ADMIN_PARTY = os.environ.get('ADMIN_PARTY', 'False').lower() == 'true'
-CLOUDANT_HOST = os.environ.get('CLOUDANT_HOST', 'localhost')
-CLOUDANT_USERNAME = os.environ.get('CLOUDANT_USERNAME', 'admin')
-CLOUDANT_PASSWORD = os.environ.get('CLOUDANT_PASSWORD', 'pass')
-
-# global variables for retry (must be int)
-RETRY_COUNT = int(os.environ.get('RETRY_COUNT', 10))
-RETRY_DELAY = int(os.environ.get('RETRY_DELAY', 1))
-RETRY_BACKOFF = int(os.environ.get('RETRY_BACKOFF', 2))
-
-#NEW CODE#
-import json
-DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
-if 'VCAP_SERVICES' in os.environ:
-    vcap = json.loads(os.environ['VCAP_SERVICES'])
-    DATABASE_URI = vcap['user-provided'][0]['credentials']['url']
-#NEW CODE#
-
-
-
 ############################################################
 # P E R S I S T E N T   B A S E    M O D E L 
 ############################################################
@@ -235,69 +208,3 @@ class CartItem(db.Model, PersistentBase):
                 "Invalid Item: body of request contained" "bad or no data"
             )
         return self
-
-############################################################
-#  C L O U D A N T   D A T A B A S E   C O N N E C T I O N
-############################################################
-
-    @staticmethod
-    def init_db(dbname='pets'):
-        """
-        Initialized Coundant database connection
-        """
-        opts = {}
-        # Try and get VCAP from the environment
-        if 'VCAP_SERVICES' in os.environ:
-            Pet.logger.info('Found Cloud Foundry VCAP_SERVICES bindings')
-            vcap_services = json.loads(os.environ['VCAP_SERVICES'])
-            # Look for Cloudant in VCAP_SERVICES
-            for service in vcap_services:
-                if service.startswith('cloudantNoSQLDB'):
-                    opts = vcap_services[service][0]['credentials']
-
-        # if VCAP_SERVICES isn't found, maybe we are running on Kubernetes?
-        if not opts and 'BINDING_CLOUDANT' in os.environ:
-            Pet.logger.info('Found Kubernetes BINDING_CLOUDANT bindings')
-            opts = json.loads(os.environ['BINDING_CLOUDANT'])
-
-        # If Cloudant not found in VCAP_SERVICES or BINDING_CLOUDANT
-        # get it from the CLOUDANT_xxx environment variables
-        if not opts:
-            Pet.logger.info('VCAP_SERVICES and BINDING_CLOUDANT undefined.')
-            opts = {
-                "username": CLOUDANT_USERNAME,
-                "password": CLOUDANT_PASSWORD,
-                "host": CLOUDANT_HOST,
-                "port": 5984,
-                "url": "http://"+CLOUDANT_HOST+":5984/"
-            }
-
-        if any(k not in opts for k in ('host', 'username', 'password', 'port', 'url')):
-            raise DatabaseConnectionError('Error - Failed to retrieve options. ' \
-                             'Check that app is bound to a Cloudant service.')
-
-        Pet.logger.info('Cloudant Endpoint: %s', opts['url'])
-        try:
-            if ADMIN_PARTY:
-                Pet.logger.info('Running in Admin Party Mode...')
-            Pet.client = Cloudant(opts['username'],
-                                  opts['password'],
-                                  url=opts['url'],
-                                  connect=True,
-                                  auto_renew=True,
-                                  admin_party=ADMIN_PARTY,
-                                  adapter=Replay429Adapter(retries=10, initialBackoff=0.01)
-                                 )
-
-        except ConnectionError:
-            raise DatabaseConnectionError('Cloudant service could not be reached')
-
-        # Create database if it doesn't exist
-        try:
-            Pet.database = Pet.client[dbname]
-        except KeyError:
-            # Create a database using an initialized client
-            Pet.database = Pet.client.create_database(dbname)
-        # check for success
-        if not Pet.database.exists():
-            raise DatabaseConnectionError('Database [{}] could not be obtained'.format(dbname))
