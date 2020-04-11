@@ -36,7 +36,8 @@ db = SQLAlchemy()
 class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
     pass
- 
+
+DATETIME_FORMAT='%Y-%m-%d %H:%M:%S.%f'
 
 ############################################################
 # P E R S I S T E N T   B A S E    M O D E L 

@@ -7,6 +7,7 @@ Test cases can be run with the following:
 """
 import os
 import logging
+import json
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from service.models import ShopCart, CartItem
@@ -15,10 +16,8 @@ from flask_api import status  # HTTP Status Codes
 from service.models import db
 from service.service import app, init_db
 
-# DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
-DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
-)
+DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
+
 
 ######################################################################
 #  T E S T   C A S E S
