@@ -33,12 +33,19 @@ logger = logging.getLogger("flask.app")
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
+class DataValidationError(Exception):
+    """ Used for an data validation errors when deserializing """
+    pass
+
+DATETIME_FORMAT='%Y-%m-%d %H:%M:%S.%f'
+
 from cloudant.client import Cloudant
 from cloudant.query import Query
 from cloudant.adapters import Replay429Adapter
 from requests import HTTPError, ConnectionError
 
 # get configruation from enviuronment (12-factor)
+import os
 ADMIN_PARTY = os.environ.get('ADMIN_PARTY', 'False').lower() == 'true'
 CLOUDANT_HOST = os.environ.get('CLOUDANT_HOST', 'localhost')
 CLOUDANT_USERNAME = os.environ.get('CLOUDANT_USERNAME', 'admin')
@@ -50,13 +57,14 @@ RETRY_DELAY = int(os.environ.get('RETRY_DELAY', 1))
 RETRY_BACKOFF = int(os.environ.get('RETRY_BACKOFF', 2))
 
 #NEW CODE#
-import os
 import json
 DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
 if 'VCAP_SERVICES' in os.environ:
     vcap = json.loads(os.environ['VCAP_SERVICES'])
     DATABASE_URI = vcap['user-provided'][0]['credentials']['url']
 #NEW CODE#
+
+
 
 ############################################################
 # P E R S I S T E N T   B A S E    M O D E L 
@@ -293,4 +301,3 @@ class CartItem(db.Model, PersistentBase):
         # check for success
         if not Pet.database.exists():
             raise DatabaseConnectionError('Database [{}] could not be obtained'.format(dbname))
-© 2020 GitHub, Inc.
