@@ -375,17 +375,7 @@ class TestYourResourceServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-        # # get the list back and make sure there are 2
-        # resp = self.app.get(
-        #     "/shopcarts/{}/items".format(shopcart.id), 
-        #     content_type="application/json"
-        # )
-        # self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        # data = resp.get_json()
-        # self.assertEqual(len(data), 2)
-
-        # get the list back and make sure there are 2
+        # clear the cart k and make sure there are no content
         resp = self.app.put(
             "/shopcarts/{}/clear".format(shopcart.id), 
             content_type="application/json"
