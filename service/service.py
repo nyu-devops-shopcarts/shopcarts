@@ -304,6 +304,6 @@ def clear_shopcart (shopcart_id):
     app.logger.info("Request to clear items from the shopping cart")
 
     shopcart = ShopCart.find_or_404(shopcart_id)
-    results = [item.serialize() for item in shopcart.items]
+    #results = [item.serialize() for item in shopcart.items]
     results = [item.delete() for item in shopcart.items]
     return make_response("", status.HTTP_204_NO_CONTENT)
