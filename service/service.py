@@ -167,7 +167,7 @@ def update_shopcarts(shopcart_id):
     return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# DELETE AN ACCOUNT - Robert Ung
+# DELETE A SHOPCART - Robert Ung
 ######################################################################
 @app.route("/shopcarts/<int:shopcart_id>", methods=["DELETE"])
 def delete_shopcarts(shopcart_id):
@@ -294,3 +294,16 @@ def update_items (shopcart_id, item_id):
     item.id = item_id
     item.save()
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# CLEAR ALL ITEMS FROM SHOPCART
+######################################################################
+@app.route("/shopcarts/<int:shopcart_id>/clear", methods=["PUT"])
+def clear_shopcart (shopcart_id):
+    """ Returns all of the items within the shopcart """
+    app.logger.info("Request to clear items from the shopping cart")
+
+    shopcart = ShopCart.find_or_404(shopcart_id)
+    results = [item.serialize() for item in shopcart.items]
+    results = [item.delete() for item in shopcart.items]
+    return make_response("", status.HTTP_204_NO_CONTENT)
