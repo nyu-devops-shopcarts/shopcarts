@@ -106,7 +106,7 @@ def internal_server_error(error):
 @app.route("/")
 def index():
     """ Root URL response """
-    return "Reminder: return some useful information in json format about the service here", status.HTTP_200_OK
+    return app.send_static_file('index.html')
 
 #---------------------------------------------------------------------
 #                S H O P C A R T   M E T H O D S
@@ -123,6 +123,7 @@ def create_shopcarts():
     This endpoint will create a Shopcart based the data in the body that is posted
     """
     app.logger.info("Request to create a ShopCart")
+    app.logger.info(request.get_json())
     check_content_type("application/json")
     shopcart = ShopCart()
     shopcart.deserialize(request.get_json())
