@@ -146,10 +146,10 @@ $(function () {
     });
 
     // ****************************************
-    // Search for a Shopcart
+    // List All Shopcarts
     // ****************************************
 
-    $("#search-btn").click(function () {
+    $("#list-btn").click(function () {
 
         var customer_id = $("#customer_id").val();
 
@@ -177,7 +177,7 @@ $(function () {
             var firstShopcart = "";
             for(var i = 0; i < res.length; i++) {
                 var shopcart = res[i];
-                var row = "<tr><td>"+shopcart._id+"</td><td>"+shopcart.customer_id+"</td><td>";
+                var row = "<tr><td>"+shopcart.id+"</td><td>"+shopcart.customer_id+"</td><td>";
                 $("#search_results").append(row);
                 if (i == 0) {
                     firstShopcart = shopcart;
