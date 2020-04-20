@@ -8,6 +8,7 @@ $(function () {
     function update_form_data(res) {
         $("#shopcart_id").val(res._id);
         $("#customer_id").val(res.customer_id);
+        //$("#items").val(res.items);
         //$("#pet_category").val(res.category);
         //if (res.available == true) {
         //    $("#pet_available").val("true");
@@ -20,6 +21,7 @@ $(function () {
     function clear_form_data() {
         $("#shopcart_id").val("");
         $("#customer_id").val("");
+        //$("#items").val("");
         //$("#pet_available").val("");
     }
 
@@ -35,14 +37,14 @@ $(function () {
 
     $("#create-btn").click(function () {
 
-        //var shopcart_id = $("#shopcart_id").val();
         var customer_id = $("#customer_id").val();
+        //var items = $("#items").val();
         //var available = $("#pet_available").val() == "true";
 
         var data = {
             //"id": shopcart_id,
             "customer_id": customer_id,
-            //"available": available
+            //"items": items
         };
 
         var ajax = $.ajax({
@@ -108,7 +110,7 @@ $(function () {
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/shopcarts?" + shopcart_id,
+            url: "/shopcarts/" + shopcart_id,
             contentType: "application/json",
             data: ''
         })
@@ -156,7 +158,7 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#pet_id").val("");
+        $("#shopcart_id").val("");
         clear_form_data()
     });
 
@@ -168,20 +170,20 @@ $(function () {
 
         //var shopcart_id = $("#shopcart_id").val();
         var customer_id = $("#customer_id").val();
-        //var item_id = $("#pet_available").val() == "true";
+        //var items = $("#items").val();
 
         var queryString = ""
 
-        if (shopcart_id) {
-            queryString += 'shopcart_id=' + shopcart_id
-        }
         if (customer_id) {
-            if (queryString.length > 0) {
-                queryString += '&customer_id=' + customer_id
-            } else {
-                queryString += 'customer_id=' + customer_id
-            }
+            queryString += 'customer_id=' + customer_id
         }
+        //if (customer_id) {
+        //    if (queryString.length > 0) {
+        //        queryString += '&customer_id=' + customer_id
+        //    } else {
+        //        queryString += 'customer_id=' + customer_id
+        //    }
+        //}
         //if (available) {
         //    if (queryString.length > 0) {
         //        queryString += '&available=' + available
@@ -202,15 +204,15 @@ $(function () {
             $("#search_results").empty();
             $("#search_results").append('<table class="table-striped" cellpadding="10">');
             var header = '<tr>'
-            header += '<th style="width:10%">Shopcart ID</th>'
-            header += '<th style="width:40%">Customer ID</th>'
-            //header += '<th style="width:40%">Category</th>'
+            header += '<th style="width:10%">Shopcart_ID</th>'
+            header += '<th style="width:40%">Customer_ID</th>'
+            header += '<th style="width:40%">Items</th>'
             //header += '<th style="width:10%">Available</th></tr>'
             $("#search_results").append(header);
             var firstShopcart = "";
             for(var i = 0; i < res.length; i++) {
                 var shopcart = res[i];
-                var row = "<tr><td>"+shopcart._id+"</td><td>"+shopcart.customer_id+"</td><td>";
+                var row = "<tr><td>"+shopcart._id+"</td><td>"+shopcart.customer_id+"</td><td>"+shopcart.items+"</td><td>";
                 $("#search_results").append(row);
                 if (i == 0) {
                     firstShopcart = shopcart;
@@ -220,8 +222,8 @@ $(function () {
             $("#search_results").append('</table>');
 
             // copy the first result to the form
-            if (firstPet != "") {
-                update_form_data(firstPet)
+            if (firstShopcart != "") {
+                update_form_data(firstShopcart)
             }
 
             flash_message("Success")

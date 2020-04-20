@@ -1,8 +1,7 @@
-
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Shopcarts RESTful Service</title>
+    <title>Shopcart RESTful Service</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,7 +12,7 @@
   <body>
     <div class="container">
         <div class="page-header">
-            <h1>Shopcarts REST API Service</h1>
+            <h1>Shopcart REST API Service</h1>
         </div>
 
         <!-- Flash Message -->
@@ -39,57 +38,19 @@
               </div>
             </div> <!-- form div -->
 
-             <!--<div class="form-horizontal">
-              <div class="form-group">
-                <label class="control-label col-sm-2" for="id">Shopcart ID:</label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control" id="id" placeholder="Enter ID for Shopcart">
-                </div>
-              </div>-->
+            <div class="form-horizontal">
               <div class="form-group">
                 <label class="control-label col-sm-2" for="customer_id">Customer ID:</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="customer_id" placeholder="Enter Customer ID for Shopcart">
+                  <input type="text" class="form-control" id="customer_id" placeholder="Enter ID for Customer">
                 </div>
               </div>
-        <!--      <div class="form-group">
-                <label class="control-label col-sm-2" for="pet_available">Available:</label>  
-                <div class="col-sm-10"> 
-                  <select class="form-control" id="pet_available"> 
-                      <option value="true" selected>True</option> 
-                      <option value="false">False</option> 
-                  </select>
-                </div>
-              </div> -->
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
                   <button type="submit" class="btn btn-primary" id="clear-btn">Clear</button>
                   <button type="submit" class="btn btn-success" id="create-btn">Create</button>
                   <button type="submit" class="btn btn-warning" id="update-btn">Update</button>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="control-label col-sm-2" for="item_id">Item ID:</label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control" id="item_id" placeholder="Enter ID for Item">
-                </div>
-              </div>
-        <!--      <div class="form-group">
-                <label class="control-label col-sm-2" for="pet_available">Available:</label>  
-                <div class="col-sm-10"> 
-                  <select class="form-control" id="pet_available"> 
-                      <option value="true" selected>True</option> 
-                      <option value="false">False</option> 
-                  </select>
-                </div>
-              </div> -->
-              <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                  <button type="submit" class="btn btn-primary" id="item-search-btn">Search</button>
-                  <button type="submit" class="btn btn-primary" id="item-clear-btn">Clear</button>
-                  <button type="submit" class="btn btn-success" id="item-create-btn">Create</button>
-                  <button type="submit" class="btn btn-warning" id="item-update-btn">Update</button>
                 </div>
               </div>
           </div> <!-- form div -->
@@ -100,11 +61,9 @@
           <table class="table-striped">
             <thead>
             <tr>
-                <th class="col-md-1">Shopcart ID</th>
+                <th class="col-md-1">ID</th>
                 <th class="col-md-4">Customer ID</th>
-                <th class="col-md-4">Item ID</th>
-            <!--     <th class="col-md-4">Category</th> <!-- 
-                <th class="col-md-3">Available</th>  TO BE CHANGED -->
+
             </tr>
             </thead>
           </table>
@@ -112,7 +71,7 @@
 
         <footer>
           <br><br>
-          <p>&copy; NYU DevOps Company 2020</p>
+          <p>&copy; NYU DevOps Company 2017</p>
         </footer>
         </div><!--/span-->
      </div><!--/row-->
