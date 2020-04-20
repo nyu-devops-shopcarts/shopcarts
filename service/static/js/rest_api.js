@@ -8,21 +8,12 @@ $(function () {
     function update_form_data(res) {
         $("#shopcart_id").val(res._id);
         $("#customer_id").val(res.customer_id);
-        //$("#items").val(res.items);
-        //$("#pet_category").val(res.category);
-        //if (res.available == true) {
-        //    $("#pet_available").val("true");
-        //} else {
-        //    $("#pet_available").val("false");
-        //}
     }
 
     /// Clears all form fields
     function clear_form_data() {
         $("#shopcart_id").val("");
         $("#customer_id").val("");
-        //$("#items").val("");
-        //$("#pet_available").val("");
     }
 
     // Updates the flash message area
@@ -32,19 +23,15 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Shopcart
+    // Create a Shopcart WORKS
     // ****************************************
 
     $("#create-btn").click(function () {
 
         var customer_id = $("#customer_id").val();
-        //var items = $("#items").val();
-        //var available = $("#pet_available").val() == "true";
 
         var data = {
-            //"id": shopcart_id,
-            "customer_id": customer_id,
-            //"items": items
+            "customer_id": customer_id
         };
 
         var ajax = $.ajax({
@@ -66,25 +53,21 @@ $(function () {
 
 
     // ****************************************
-    // Update a Pet
+    // Update a Shopcart
     // ****************************************
 
     $("#update-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var shopcart_id = $("#shopcart_id").val();
+        var customer_id = $("#customer_id").val();
 
         var data = {
-            "name": name,
-            "category": category,
-            "available": available
+            "customer_id": customer_id
         };
 
         var ajax = $.ajax({
                 type: "PUT",
-                url: "/pets/" + pet_id,
+                url: "/shopcarts/" + shopcart_id,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -101,7 +84,7 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Pet
+    // Retrieve a Shopcart
     // ****************************************
 
     $("#retrieve-btn").click(function () {
@@ -129,23 +112,23 @@ $(function () {
     });
 
     // ****************************************
-    // Delete a Pet
+    // Delete a Shopcart
     // ****************************************
 
     $("#delete-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
+        var shopcart_id = $("#shopcart_id").val();
 
         var ajax = $.ajax({
             type: "DELETE",
-            url: "/pets/" + pet_id,
+            url: "/shopcarts/" + shopcart_id,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Pet has been Deleted!")
+            flash_message("Shopcart has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -158,38 +141,22 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#shopcart_id").val("");
+        $("#customr_id").val("");
         clear_form_data()
     });
 
     // ****************************************
-    // Search for a Pet
+    // Search for a Shopcart
     // ****************************************
 
     $("#search-btn").click(function () {
 
-        //var shopcart_id = $("#shopcart_id").val();
         var customer_id = $("#customer_id").val();
-        //var items = $("#items").val();
 
         var queryString = ""
 
         if (customer_id) {
             queryString += 'customer_id=' + customer_id
-        }
-        //if (customer_id) {
-        //    if (queryString.length > 0) {
-        //        queryString += '&customer_id=' + customer_id
-        //    } else {
-        //        queryString += 'customer_id=' + customer_id
-        //    }
-        //}
-        //if (available) {
-        //    if (queryString.length > 0) {
-        //        queryString += '&available=' + available
-        //    } else {
-        //        queryString += 'available=' + available
-        //    }
         }
 
         var ajax = $.ajax({
@@ -206,13 +173,11 @@ $(function () {
             var header = '<tr>'
             header += '<th style="width:10%">Shopcart_ID</th>'
             header += '<th style="width:40%">Customer_ID</th>'
-            header += '<th style="width:40%">Items</th>'
-            //header += '<th style="width:10%">Available</th></tr>'
             $("#search_results").append(header);
             var firstShopcart = "";
             for(var i = 0; i < res.length; i++) {
                 var shopcart = res[i];
-                var row = "<tr><td>"+shopcart._id+"</td><td>"+shopcart.customer_id+"</td><td>"+shopcart.items+"</td><td>";
+                var row = "<tr><td>"+shopcart._id+"</td><td>"+shopcart.customer_id+"</td><td>";
                 $("#search_results").append(row);
                 if (i == 0) {
                     firstShopcart = shopcart;
