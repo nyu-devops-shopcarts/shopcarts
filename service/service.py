@@ -106,7 +106,7 @@ def internal_server_error(error):
 @app.route("/")
 def index():
     """ Root URL response """
-    return "Reminder: return some useful information in json format about the service here", status.HTTP_200_OK
+    return app.send_static_file('index.html')
 
 #---------------------------------------------------------------------
 #                S H O P C A R T   M E T H O D S
@@ -123,6 +123,7 @@ def create_shopcarts():
     This endpoint will create a Shopcart based the data in the body that is posted
     """
     app.logger.info("Request to create a ShopCart")
+    app.logger.info(request.get_json())
     check_content_type("application/json")
     shopcart = ShopCart()
     shopcart.deserialize(request.get_json())
@@ -167,7 +168,7 @@ def update_shopcarts(shopcart_id):
     return make_response(jsonify(shopcart.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# DELETE AN ACCOUNT - Robert Ung
+# DELETE A SHOPCART - Robert Ung
 ######################################################################
 @app.route("/shopcarts/<int:shopcart_id>", methods=["DELETE"])
 def delete_shopcarts(shopcart_id):
@@ -294,3 +295,15 @@ def update_items (shopcart_id, item_id):
     item.id = item_id
     item.save()
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# CLEAR ALL ITEMS FROM SHOPCART
+######################################################################
+@app.route("/shopcarts/<int:shopcart_id>/clear", methods=["PUT"])
+def clear_shopcart (shopcart_id):
+    """ Returns all of the items within the shopcart """
+    app.logger.info("Request to clear items from the shopping cart")
+
+    shopcart = ShopCart.find_or_404(shopcart_id)
+    results = [item.delete() for item in shopcart.items]
+    return make_response("", status.HTTP_204_NO_CONTENT)

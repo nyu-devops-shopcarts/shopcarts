@@ -7,6 +7,7 @@ Test cases can be run with the following:
 """
 import os
 import logging
+import json
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from service.models import ShopCart, CartItem
@@ -293,7 +294,7 @@ class TestYourResourceServer(TestCase):
 ##### Listing Test Case ## 
     def test_get_shopcart_items_list(self):
         """ Get a list of Items in a ShopCart """
-        # add two addresses to account
+        # add two items to account
         shopcart = self._create_shopcarts(1)[0]
         item_list = CartItemFactory.create_batch(2)
 
@@ -350,3 +351,33 @@ class TestYourResourceServer(TestCase):
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+##### Clear Test Case ## 
+    def test_clear_shopcart(self):
+        """ Clear Items in a ShopCart """
+        # add two items to account
+        shopcart = self._create_shopcarts(1)[0]
+        item_list = CartItemFactory.create_batch(2)
+
+        # Create item 1
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(shopcart.id), 
+            json=item_list[0].serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # Create item 2
+        resp = self.app.post(
+            "/shopcarts/{}/items".format(shopcart.id), 
+            json=item_list[1].serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # clear the cart k and make sure there are no content
+        resp = self.app.put(
+            "/shopcarts/{}/clear".format(shopcart.id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)

@@ -9,9 +9,17 @@ from service import app
 from service.models import ShopCart, CartItem, DataValidationError, db
 from tests.factories import ShopCartFactory, CartItemFactory
 
-DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
-)
+#DATABASE_URI = os.getenv(
+#    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
+#)
+
+#NEW CODE#
+import json
+DATABASE_URI = os.getenv("DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
+if 'VCAP_SERVICES' in os.environ:
+    vcap = json.loads(os.environ['VCAP_SERVICES'])
+    DATABASE_URI = vcap['user-provided'][0]['credentials']['url']
+#NEW CODE#
 
 ######################################################################
 #  S H O P C A R T   M O D E L   T E S T   C A S E S
