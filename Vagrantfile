@@ -93,6 +93,11 @@ Vagrant.configure(2) do |config|
     echo " For the Kubernetes Dashboard use:"
     echo " kubectl proxy --address='0.0.0.0'"
     echo "************************************\n"
+    echo "\n*****************************************"
+    echo " Installing Chrome Headless and Selenium"
+    echo "*****************************************\n"
+    apt-get install -y chromium-chromedriver python3-selenium
+    chromedriver --version
   SHELL
 
   ######################################################################
