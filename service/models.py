@@ -126,17 +126,17 @@ class ShopCart(db.Model, PersistentBase):
     def deserialize(self, data):
         """
         Deserializes a ShopCart from a dictionary
-
         Args:
             data (dict): A dictionary containing ShopCart data
         """
         try:
             self.customer_id = data["customer_id"]
             item_list = data.get("items")
-            for json_item in item_list:
-                item = CartItem()
-                item.deserialize(json_item)
-                self.items.append(item)
+            if item_list:
+                for json_item in item_list:
+                    item = CartItem()
+                    item.deserialize(json_item)
+                    self.items.append(item)
         except KeyError as error:
             raise DataValidationError("Invalid ShopCart: missing " + error.args[0])
         except TypeError as error:
