@@ -5,10 +5,10 @@ Feature: The shopcart store service back-end
 
 Background:
     Given the following shopcarts
-        | ID       | customer_id | item_id |
-        | 2        | 456         | 123  |
-        | 2        | 456         | 789  |
-        | 2        | 456         | 808 |
+        | ID       | customer_id |
+        | 2        | 123         |
+        | 2        | 456         |
+        | 2        | 789         |
 
 Scenario: The server is running
     When I visit the "Home Page"

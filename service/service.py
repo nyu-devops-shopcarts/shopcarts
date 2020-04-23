@@ -307,31 +307,3 @@ def clear_shopcart (shopcart_id):
     shopcart = ShopCart.find_or_404(shopcart_id)
     results = [item.delete() for item in shopcart.items]
     return make_response("", status.HTTP_204_NO_CONTENT)
-
-######################################################################
-# CLEAR ALL SHOPCARTS
-######################################################################
-@app.route("/shopcarts/clear", methods=["PUT"])
-def clear_shopcart (shopcart_id):
-    """ Returns all of the items within the shopcart """
-    app.logger.info("Request to clear items from the shopping cart")
-
-    shopcart = ShopCart.find_or_404(shopcart_id)
-    results = [item.delete() for item in shopcart.items]
-    return make_response("", status.HTTP_204_NO_CONTENT)
-
-
-LIST
-@app.route("/shopcarts", methods=["GET"])
-def list_shopcarts():
-    """ Returns IDs of the ShopCarts """
-    app.logger.info("Request for ShopCart list")
-    shopcarts = []
-    id = request.args.get("id")
-    if id:
-        shopcarts = ShopCart.find(id)
-    else:
-        shopcarts = ShopCart.all()
-
-    results = [shopcart.serialize() for shopcart in shopcarts]
-    return make_response(jsonify(results), status.HTTP_200_OK)  
