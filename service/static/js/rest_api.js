@@ -6,14 +6,21 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#shopcart_id").val(res._id);
-        $("#customer_id").val(res.customer_id);
+        $("#id").val(res.id);
+        $("#shopcart_id").val(res.shopcart_id);
+        $("#item_name").val(res.item_name);
+        $("#sku").val(res.sku);
+        $("#quantity").val(res.quantity);
+        $("#price").val(res.price);
     }
 
     /// Clears all form fields
     function clear_form_data() {
         $("#shopcart_id").val("");
-        $("#customer_id").val("");
+        $("#item_name").val("");
+        $("#sku").val("");
+        $("#quantity").val("");
+        $("#price").val("");
     }
 
     // Updates the flash message area
@@ -23,23 +30,35 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Shopcart WORKS
+    // Create an Item
     // ****************************************
 
     $("#create-btn").click(function () {
 
-        var customer_id = $("#customer_id").val();
+        console.log("Creating an Item");
+
+        var shopcart_id = $("#shopcart_id").val();
+        var item_name = $("#item_name").val();
+        var sku = $("#sku").val();
+        var quantity = $("#quantity").val();
+        var price = $("#item_price").val();
 
         var data = {
-            "customer_id": customer_id
+            "shopcart_id": shopcart_id,
+            "item_name": item_name,
+            "sku": sku,
+            "quantity": quantity,
+            "price": price,
         };
+
 
         var ajax = $.ajax({
             type: "POST",
-            url: "/shopcarts",
-            contentType: "application/json",
+            url: "/shopcarts/items",
+            contentType:"application/json",
             data: JSON.stringify(data),
         });
+        
 
         ajax.done(function(res){
             update_form_data(res)
@@ -53,16 +72,26 @@ $(function () {
 
 
     // ****************************************
-    // Update a Shopcart
+    // Update an Item
     // ****************************************
 
     $("#update-btn").click(function () {
 
+        console.log("Updating an Item");
+
+        
         var shopcart_id = $("#shopcart_id").val();
-        var customer_id = $("#customer_id").val();
+        var item_name = $("#item_name").val();
+        var sku = $("#sku").val();
+        var quantity = $("#quantity").val();
+        var price = $("#item_price").val();
 
         var data = {
-            "customer_id": customer_id
+            "shopcart_id": shopcart_id,
+            "item_name": item_name,
+            "sku": sku,
+            "quantity": quantity,
+            "price": price,
         };
 
         var ajax = $.ajax({
@@ -84,11 +113,13 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Shopcart
+    // Retrieve a Item
     // ****************************************
 
     $("#retrieve-btn").click(function () {
 
+        console.log("Retrieving an Item");
+        
         var shopcart_id = $("#shopcart_id").val();
 
         var ajax = $.ajax({
@@ -117,18 +148,20 @@ $(function () {
 
     $("#delete-btn").click(function () {
 
-        var shopcart_id = $("#shopcart_id").val();
+        console.log("Deleting an Item");
+
+        var item_id = $("#item_id").val();
 
         var ajax = $.ajax({
             type: "DELETE",
-            url: "/shopcarts/" + shopcart_id,
-            contentType: "application/json",
+            url: "/shopcarts/items/" + item_id,
+            contentType:"application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Shopcart has been Deleted!")
+            flash_message("Item has been Deleted!")
         });
 
         ajax.fail(function(res){

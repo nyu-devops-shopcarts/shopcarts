@@ -23,7 +23,7 @@
         </div>
 
         <div class="col-md-12" id="form_data">
-          Create, Retrieve, Update, and Delete a Shopcart:
+          Create, Retrieve, Update, and Delete an Item:
           <div class="well">
             <div class="form-horizontal">
               <div class="form-group">
@@ -40,11 +40,30 @@
 
             <div class="form-horizontal">
               <div class="form-group">
-                <label class="control-label col-sm-2" for="customer_id">Customer ID:</label>
+                <label class="control-label col-sm-2" for="item_name">Item Name:</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="customer_id" placeholder="Enter ID for Customer">
+                  <input type="text" class="form-control" id="item_name" placeholder="Enter ID for Item">
                 </div>
               </div>
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="item_sku">Sku:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="item_sku" placeholder="Enter sku for Item">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="item_quantity">Item quantity:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="item_quantity" placeholder="Enter quantity of item">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="item_price">Price:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="item_price" placeholder="Enter price for Item">
+                  </div>
+                </div>
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-primary" id="list-btn">List All Shopcarts</button>
@@ -61,8 +80,12 @@
           <table class="table-striped">
             <thead>
             <tr>
-                <th class="col-md-1">ID</th>
-                <th class="col-md-4">Customer ID</th>
+              <th class="col-md-1">ID</th>
+              <th class="col-md-4">Shopcart ID</th>
+              <th class="col-md-4">Item Name</th>
+              <th class="col-md-4">SKU</th>
+              <th class="col-md-4">Quantity</th>
+              <th class="col-md-4">Price</th>
             </tr>
             </thead>
           </table>
@@ -70,7 +93,7 @@
 
         <footer>
           <br><br>
-          <p>&copy; NYU DevOps Company 2017</p>
+          <p>&copy; NYU DevOps Company</p>
         </footer>
         </div><!--/span-->
      </div><!--/row-->
