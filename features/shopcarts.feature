@@ -6,9 +6,9 @@ Feature: The shopcart store service back-end
 Background:
     Given the following shopcarts
         | ID       | customer_id |
-        | 2        | 123         |
+        | 1        | 123         |
         | 2        | 456         |
-        | 2        | 789         |
+        | 3        | 789         |
 
 Scenario: The server is running
     When I visit the "Home Page"
