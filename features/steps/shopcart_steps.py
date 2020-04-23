@@ -22,8 +22,8 @@ WAIT_SECONDS = int(getenv('WAIT_SECONDS', '60'))
 def step_impl(context):
     """ Delete all ShopCarts and load new ones """
     headers = {'Content-Type': 'application/json'}
-    #context.resp = requests.delete(context.base_url + '/shopcarts/reset', headers=headers)
-    #expect(context.resp.status_code).to_equal(204)
+    context.resp = requests.get(context.base_url + '/shopcarts/clear', headers=headers)
+    expect(context.resp.status_code).to_equal(204)
     create_url = context.base_url + '/shopcarts'
     for row in context.table:
         data = {

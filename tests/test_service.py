@@ -381,3 +381,18 @@ class TestYourResourceServer(TestCase):
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+
+#### Delete All Shopcarts
+    def test_delete_all_shopcarts(self):
+        """ Delete All ShopCarts """
+        self._create_shopcarts(5)
+        resp = self.app.get("/shopcarts")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+        resp = self.app.get(
+            "/shopcarts/clear", 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
