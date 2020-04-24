@@ -27,9 +27,9 @@ Scenario: List all shopcarts
 
 Scenario: Create a ShopCart
     When I visit the "Home Page"
-    And I set the "ID" to "4"
-    And I set the "customer_id" to "878"
+    And I set the "customer_id" to "909"
     And I press the "Create" button
-    Then I should see "4" in the "ID" field
-    And I should see "878" in the "customer_id" field
+    And I press the "List" button
+    Then I should see "909" in the results
+    
 
