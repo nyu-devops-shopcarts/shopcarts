@@ -24,3 +24,12 @@ Scenario: List all shopcarts
     And I should see "123" in the results
     And I should see "456" in the results
     And I should see "789" in the results
+
+Scenario: Create a ShopCart
+    When I visit the "Home Page"
+    And I set the "customer_id" to "909"
+    And I press the "Create" button
+    And I press the "List" button
+    Then I should see "909" in the results
+    
+
