@@ -6,7 +6,7 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#shopcart_id").val(res._id);
+        $("#shopcart_id").val(res.id);
         $("#customer_id").val(res.customer_id);
     }
 
@@ -28,6 +28,7 @@ $(function () {
 
     $("#create-btn").click(function () {
 
+        var id = $("#shopcart_id").val();
         var customer_id = $("#customer_id").val();
 
         var data = {
@@ -146,11 +147,12 @@ $(function () {
     });
 
     // ****************************************
-    // List All Shopcarts
+    // Search All Shopcarts
     // ****************************************
 
-    $("#list-btn").click(function () {
+    $("#search-btn").click(function () {
 
+        var shopcart_id = $("#shopcart_id").val();
         var customer_id = $("#customer_id").val();
 
         var queryString = ""
