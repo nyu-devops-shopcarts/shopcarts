@@ -14,7 +14,7 @@ Scenario: Query A ShopCart
     When I visit the "Home Page"
     And I set the "shopcart_id" to "2"
     And I press the "Retrieve" button
-    Then I should see "456" as the "customer_id"
+    Then I should see "456" in the "customer_id" field
 
 Scenario: The server is running
     When I visit the "Home Page"
