@@ -10,6 +10,12 @@ Background:
         | 2        | 456         |
         | 3        | 789         |
 
+Scenario: Query A ShopCart
+    When I visit the "Home Page"
+    And I set the "shopcart_id" to "2"
+    And I press the "Retrieve" button
+    Then I should see "456" as the "customer_id"
+
 Scenario: The server is running
     When I visit the "Home Page"
     Then I should see "Shopcart REST API Service" in the title
@@ -31,5 +37,3 @@ Scenario: Create a ShopCart
     And I press the "Create" button
     And I press the "List" button
     Then I should see "909" in the results
-    
-
