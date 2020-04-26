@@ -113,7 +113,7 @@ $(function () {
     });
 
     // ****************************************
-    // Delete a Shopcart
+    // Delete a single Shopcart
     // ****************************************
 
     $("#delete-btn").click(function () {
@@ -135,6 +135,32 @@ $(function () {
         ajax.fail(function(res){
             flash_message("Server error!")
         });
+    });
+
+    // ****************************************
+    // Delete ALL Shopcart
+    // ****************************************
+
+    $("#delete-all-btn").click(function () {
+
+        var ajax = $.ajax({
+            type: "GET",
+            url: "/shopcarts/clear",
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            //alert(res.toSource())
+            clear_form_data()
+            flash_message("All Shopcarts have been Deleted!")
+        });
+
+        ajax.fail(function(res){
+            clear_form_data()
+            flash_message(res.responseJSON.message)
+        });
+
     });
 
     // ****************************************
