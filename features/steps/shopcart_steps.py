@@ -118,10 +118,16 @@ def step_impl(context, message):
     )
     expect(found).to_be(True)
 
+@then('the "{element_name}" field should be empty')
+def step_impl(context, element_name):
+    element_id = element_name.lower()
+    element = context.driver.find_element_by_id(element_id)
+    expect(element.get_attribute('value')).to_be(u'')
+
 ## COPY AND PASTE ##
 @when('I copy the "{element_name}" field')
 def step_impl(context, element_name):
-    element_id = 'pet_' + element_name.lower()
+    element_id = element_name.lower()
     # element = context.driver.find_element_by_id(element_id)
     element = WebDriverWait(context.driver, WAIT_SECONDS).until(
         expected_conditions.presence_of_element_located((By.ID, element_id))
@@ -131,7 +137,7 @@ def step_impl(context, element_name):
 
 @when('I paste the "{element_name}" field')
 def step_impl(context, element_name):
-    element_id = 'pet_' + element_name.lower()
+    element_id = element_name.lower()
     # element = context.driver.find_element_by_id(element_id)
     element = WebDriverWait(context.driver, WAIT_SECONDS).until(
         expected_conditions.presence_of_element_located((By.ID, element_id))
