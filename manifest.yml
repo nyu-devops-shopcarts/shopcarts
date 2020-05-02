@@ -4,6 +4,8 @@
     - name: nyu-shopcart-service-s20
       path: .
       instances: 2
+      host: nyu-devops-shopcarts-CI
+      domain: mybluemix.net
       memory: 64M
       routes:
       - route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
