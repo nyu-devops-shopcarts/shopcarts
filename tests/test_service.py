@@ -18,9 +18,8 @@ from service.service import app, init_db
 
 # DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://txvuzdfb:GFYpJH6gPOg3Nd7hNbPvIggAlLxwkTZb@hanno.db.elephantsql.com:5432/txvuzdfb"
-)
-#"postgres://postgres:postgres@localhost:5432/postgres"
+    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
+#
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
