@@ -7,11 +7,11 @@
       host: nyu-devops-shopcarts-CI
       domain: mybluemix.net
       memory: 64M
-      routes:
-      - route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
+      #routes:
+      #- route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
       disk_quota: 1024M
-      buildpacks: 
-      - python_buildpack
+      buildpack: python_buildpack
+      command: gunicorn --bind=0.0.0.0:$PORT service:app
       timeout: 180
       services:
       - Cloudant
