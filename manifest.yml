@@ -10,7 +10,7 @@
       routes:
       - route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
       disk_quota: 1024M
-      buildpacks: 
+      buildpack: 
       - python_buildpack
       timeout: 180
       services:
