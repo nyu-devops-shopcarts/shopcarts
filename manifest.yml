@@ -10,8 +10,8 @@
       routes:
       - route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
       disk_quota: 1024M
-      buildpack: 
-      - python_buildpack
+      buildpack: python_buildpack
+      command: gunicorn --bind=0.0.0.0:$PORT service:app
       timeout: 180
       services:
       - Cloudant
