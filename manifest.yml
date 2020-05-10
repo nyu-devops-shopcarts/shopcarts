@@ -7,15 +7,21 @@
       #host: nyu-devops-shopcarts-CI
       #domain: mybluemix.net
       memory: 512M
-      routes:
-      - route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
+      #routes:
+      #- route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
       disk_quota: 1024M
       buildpack: python_buildpack
       #command: gunicorn --bind=0.0.0.0:$PORT service:app
       timeout: 180
       services:
-      - Cloudant
+      #- Cloudant
       - ElephantSQL
       env:
         FLASK_APP : service:app
         FLASK_DEBUG : false
+
+### Need to specfify in deploy config in DEV:
+#cf push "${CF_APP}" --route-path nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
+
+### Need to specfify in deploy config in PROD:
+#cf push "${CF_APP}" --route-path nyu-shopcart-service-s20-prod.us-south.cf.appdomain.cloud
