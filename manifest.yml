@@ -4,11 +4,11 @@
     - name: nyu-shopcart-service-s20
       path: .
       instances: 2
-      #host: nyu-devops-shopcarts-CI
-      #domain: mybluemix.net
+      host: nyu-devops-shopcarts-CI
+      domain: mybluemix.net
       memory: 512M
-      routes:
-      - route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
+      #routes:
+      #- route: nyu-shopcart-service-s20.us-south.cf.appdomain.cloud
       disk_quota: 1024M
       buildpack: python_buildpack
       #command: gunicorn --bind=0.0.0.0:$PORT service:app
